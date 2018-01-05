@@ -9,10 +9,11 @@
 import Foundation
 
 struct Variant: Codable {
+    
     let id : Int
     let product_id : Int
     let title : String
-    let price : Double
+    let price : String
     let taxable : Bool
     let weight : Double
     let weight_unit : String

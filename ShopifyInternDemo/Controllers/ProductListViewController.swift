@@ -77,12 +77,17 @@ class ProductListViewController: UITableViewController {
             cell.textLabel?.text = product.title
             cell.detailTextLabel?.text = product.body_html
             let url = URL(string: product.image.src)
-            cell.imageView?.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, url) in
-                tableView.reloadRows(at: [indexPath], with: .automatic)
-            })
+            let placeholder = UIImage(named: "icons8-price_tag")
+            cell.imageView?.kf.setImage(with: url, placeholder: placeholder)
+            
         }
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)
+        cell?.imageView?.kf.cancelDownloadTask()
     }
 }
 
