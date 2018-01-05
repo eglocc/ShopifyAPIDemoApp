@@ -12,10 +12,12 @@ class ProductDetailViewController: UIViewController {
     
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var productInfoTable: UITableView!
+    @IBOutlet weak var variantCollection: UICollectionView!
     
     let dataSource = ProductDataSource()
     var productID: Int?
     var product : ProductDetail?
+    var currentVariant : Int?
     
     var productInfoKeys = ["Title", "Description", "Vendor", "Tags"]
 
@@ -43,6 +45,8 @@ extension ProductDetailViewController: ProductDataSourceDelegate {
             self.navigationItem.title = product.product_type
             self.pageControl.numberOfPages = product.variants.count
             self.pageControl.isHidden = false
+            self.productInfoTable.reloadData()
+            self.variantCollection.reloadData()
         }
     }
 }
@@ -59,12 +63,34 @@ extension ProductDetailViewController: UICollectionViewDataSource, UICollectionV
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "VariantCell", for: indexPath) as! VariantCell
         
         if let variant = product?.variants[indexPath.row] {
-            
+            cell.variant = variant
         }
         
         return cell
     }
     
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
+        if let variants = self.product?.variants {
+            let width = self.variantCollection.contentSize.width / CGFloat(variants.count)
+            if velocity.x != 0 {
+                let remainder = targetContentOffset.pointee.x.truncatingRemainder(dividingBy: width)
+                let truncatedCellNumber : Int = Int((targetContentOffset.pointee.x - remainder) / width)
+                if remainder > width / 2 {
+                    targetContentOffset.pointee.x = CGFloat(truncatedCellNumber + 1) * width
+                    self.currentVariant = (truncatedCellNumber + 1)
+                } else {
+                    targetContentOffset.pointee.x = CGFloat(truncatedCellNumber) * width
+                    self.currentVariant = truncatedCellNumber
+                }
+            }
+        }
+        
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.pageControl.currentPage = self.currentVariant!
+    }
     
 }
 
