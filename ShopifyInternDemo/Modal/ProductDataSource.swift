@@ -39,13 +39,13 @@ class ProductDataSource {
     func extractProductList(productList: [Product]) {
         var dictionary = Dictionary<Character, [Product]>()
         for product in productList {
-            if let array = dictionary[product.title.first!] {
+            if let array = dictionary[product.product_type.first!] {
                 var newArray = array
                 newArray.append(product)
-                dictionary[product.title.first!] = newArray
+                dictionary[product.product_type.first!] = newArray
             } else {
-                dictionary[product.title.first!] = [Product]()
-                dictionary[product.title.first!]!.append(product)
+                dictionary[product.product_type.first!] = [Product]()
+                dictionary[product.product_type.first!]!.append(product)
             }
         }
         self.delegate?.productListExtracted(productDictionary: dictionary)

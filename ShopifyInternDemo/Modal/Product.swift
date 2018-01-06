@@ -14,4 +14,5 @@ struct Product : Codable {
     let title : String
     let body_html : String
     let image : ProductImage
+    let product_type : String
 }
